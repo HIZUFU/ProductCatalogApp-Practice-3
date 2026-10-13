@@ -1,8 +1,59 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Главная";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center mb-4">
+    <h1 class="display-5">Мониторинг датчиковой аппаратуры</h1>
+
+    <p class="lead">
+        Показания датчиков металлургических агрегатов в реальном времени
+        (ASP.NET Core SignalR).
+    </p>
+
+    <a asp-controller="Monitoring"
+       asp-action="Index"
+       class="btn btn-primary btn-lg">
+        Открыть мониторинг
+    </a>
+</div>
+
+<div class="row g-3">
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Гость</h2>
+                <p class="mb-0">
+                    Видит количество пользователей онлайн, текущие показания
+                    датчиков, журнал показаний и активные тревоги; может
+                    выбрать производственную площадку.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Пользователь</h2>
+                <p class="mb-0">
+                    Дополнительно передаёт показания контрольных замеров,
+                    просматривает справочники площадок, оборудования
+                    и датчиков с историей показаний.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-body">
+                <h2 class="h5">Администратор</h2>
+                <p class="mb-0">
+                    Дополнительно квитирует тревоги, включает и выключает
+                    имитатор датчиков, ведёт справочники площадок,
+                    оборудования и датчиков.
+                </p>
+            </div>
+        </div>
+    </div>
 </div>

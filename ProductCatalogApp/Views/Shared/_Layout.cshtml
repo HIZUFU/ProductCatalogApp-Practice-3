@@ -41,6 +41,14 @@
                             </a>
                         </li>
 
+                        <li class="nav-item">
+                            <a class="nav-link text-dark"
+                               asp-controller="Monitoring"
+                               asp-action="Index">
+                                Мониторинг
+                            </a>
+                        </li>
+
                         @if (User.Identity?.IsAuthenticated == true)
                         {
                             <li class="nav-item">
@@ -56,6 +64,14 @@
                                    asp-controller="Equipments"
                                    asp-action="Index">
                                     Оборудование
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link text-dark"
+                                   asp-controller="Sensors"
+                                   asp-action="Index">
+                                    Датчики
                                 </a>
                             </li>
                         }
