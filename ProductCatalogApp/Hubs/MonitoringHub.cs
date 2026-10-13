@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using ProductCatalogApp.Services;
 
@@ -6,6 +7,8 @@ namespace ProductCatalogApp.Hubs
     public class MonitoringHub : Hub
     {
         private const string CurrentGroupKey = "CurrentGroup";
+
+        private const double MaxAbsoluteReadingValue = 1_000_000;
 
         private readonly OnlineUserTracker _onlineUsers;
         private readonly SensorReadingService _readingService;
@@ -76,6 +79,34 @@ namespace ProductCatalogApp.Hubs
             await Clients.Caller.SendAsync(
                 MonitoringClientMethods.ReceiveSnapshot,
                 snapshot);
+        }
+
+        [Authorize]
+        public async Task SubmitReading(int sensorId, double value)
+        {
+            if (!double.IsFinite(value) ||
+                Math.Abs(value) > MaxAbsoluteReadingValue)
+            {
+                throw new HubException("Некорректное значение показания.");
+            }
+
+            string operatorName = Context.User?.Identity?.Name ?? "Оператор";
+
+            var reading = await _readingService.AddReadingAsync(
+                sensorId,
+                value,
+                operatorName);
+
+            if (reading == null)
+            {
+                throw new HubException("Датчик не найден.");
+            }
+
+            await Clients.SendReadingAsync(reading);
+
+            await Clients.Caller.SendAsync(
+                MonitoringClientMethods.ReadingAccepted,
+                reading);
         }
     }
 }

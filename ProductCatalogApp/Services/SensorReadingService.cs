@@ -23,6 +23,47 @@ namespace ProductCatalogApp.Services
                 .AnyAsync(site => site.Id == productionSiteId);
         }
 
+        public async Task<SensorReadingDto?> AddReadingAsync(
+            int sensorId,
+            double value,
+            string source)
+        {
+            var sensor = await _context.Sensors
+                .Include(sensor => sensor.Equipment)
+                    .ThenInclude(equipment => equipment!.ProductionSite)
+                .FirstOrDefaultAsync(sensor => sensor.Id == sensorId);
+
+            if (sensor == null)
+            {
+                return null;
+            }
+
+            var reading = CreateReading(sensor, value, source);
+
+            _context.SensorReadings.Add(reading);
+            await _context.SaveChangesAsync();
+
+            return SensorReadingDto.FromEntity(reading);
+        }
+
+        public static SensorReading CreateReading(
+            Sensor sensor,
+            double value,
+            string source)
+        {
+            double roundedValue = Math.Round(value, 2);
+
+            return new SensorReading
+            {
+                Sensor = sensor,
+                SensorId = sensor.Id,
+                Value = roundedValue,
+                Timestamp = DateTime.UtcNow,
+                Source = source,
+                IsAlarm = sensor.IsOutOfRange(roundedValue)
+            };
+        }
+
         public async Task<MonitoringSnapshot> GetSnapshotAsync(
             int? productionSiteId)
         {
