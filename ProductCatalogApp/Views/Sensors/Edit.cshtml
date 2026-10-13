@@ -1,0 +1,27 @@
+@model ProductCatalogApp.Models.Sensor
+
+@{
+    ViewData["Title"] = "Редактирование датчика";
+}
+
+<h1>Редактирование датчика</h1>
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+
+            <partial name="_Form" model="Model" />
+
+            <button type="submit" class="btn btn-primary">Сохранить</button>
+            <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

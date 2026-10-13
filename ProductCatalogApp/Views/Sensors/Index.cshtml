@@ -1,0 +1,77 @@
+@model IEnumerable<ProductCatalogApp.Models.Sensor>
+
+@{
+    ViewData["Title"] = "Датчики";
+}
+
+<h1>Датчики</h1>
+
+@if (User.IsInRole("Admin"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">
+            Добавить датчик
+        </a>
+    </p>
+}
+
+<form asp-action="Index" method="get" class="row g-2 align-items-end mb-3">
+    <div class="col-md-6">
+        <label for="equipmentId" class="form-label">Оборудование</label>
+
+        <select id="equipmentId"
+                name="equipmentId"
+                class="form-select"
+                asp-items="ViewBag.EquipmentId">
+            <option value="">Всё оборудование</option>
+        </select>
+    </div>
+
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Фильтровать</button>
+        <a asp-action="Index" class="btn btn-secondary">Сбросить</a>
+    </div>
+</form>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">Датчики не найдены.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead>
+            <tr>
+                <th>Датчик</th>
+                <th>Оборудование</th>
+                <th>Площадка</th>
+                <th>Норма</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var sensor in Model)
+            {
+                <tr>
+                    <td>@sensor.Name</td>
+                    <td>@sensor.Equipment?.Name</td>
+                    <td>@(sensor.Equipment?.ProductionSite?.Name ?? "Не указана")</td>
+                    <td class="text-nowrap">
+                        @sensor.MinValue – @sensor.MaxValue @sensor.Unit
+                    </td>
+                    <td class="text-nowrap">
+                        <a asp-action="Details" asp-route-id="@sensor.Id">Подробнее</a>
+
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <span> | </span>
+                            <a asp-action="Edit" asp-route-id="@sensor.Id">Редактировать</a>
+                            <span> | </span>
+                            <a asp-action="Delete" asp-route-id="@sensor.Id">Удалить</a>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,81 @@
+@model ProductCatalogApp.Models.Sensor
+
+@{
+    ViewData["Title"] = "Датчик";
+}
+
+<h1>@Model.Name</h1>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Оборудование</dt>
+    <dd class="col-sm-9">@Model.Equipment?.Name</dd>
+
+    <dt class="col-sm-3">Производственная площадка</dt>
+    <dd class="col-sm-9">@(Model.Equipment?.ProductionSite?.Name ?? "Не указана")</dd>
+
+    <dt class="col-sm-3">Единица измерения</dt>
+    <dd class="col-sm-9">@Model.Unit</dd>
+
+    <dt class="col-sm-3">Норма</dt>
+    <dd class="col-sm-9">@Model.MinValue – @Model.MaxValue @Model.Unit</dd>
+</dl>
+
+<h2 class="h5">Последние показания из базы данных</h2>
+
+@if (Model.Readings.Count == 0)
+{
+    <p class="text-muted">Показаний пока нет.</p>
+}
+else
+{
+    <table class="table table-sm align-middle">
+        <thead>
+            <tr>
+                <th>Время</th>
+                <th class="text-end">Значение</th>
+                <th>Источник</th>
+                <th>Состояние</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var reading in Model.Readings)
+            {
+                var localTime = DateTime
+                    .SpecifyKind(reading.Timestamp, DateTimeKind.Utc)
+                    .ToLocalTime();
+
+                <tr class="@(reading.IsAlarm && !reading.IsAcknowledged ? "table-danger" : reading.IsAlarm ? "table-warning" : "")">
+                    <td class="text-nowrap">@localTime.ToString("dd.MM.yyyy HH:mm:ss")</td>
+                    <td class="text-end text-nowrap">@reading.Value @Model.Unit</td>
+                    <td>@reading.Source</td>
+                    <td>
+                        @if (!reading.IsAlarm)
+                        {
+                            <span class="badge bg-success">норма</span>
+                        }
+                        else if (!reading.IsAcknowledged)
+                        {
+                            <span class="badge bg-danger">тревога</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-warning text-dark">
+                                квитировано (@reading.AcknowledgedBy)
+                            </span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<div>
+    @if (User.IsInRole("Admin"))
+    {
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Редактировать</a>
+    }
+
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</div>

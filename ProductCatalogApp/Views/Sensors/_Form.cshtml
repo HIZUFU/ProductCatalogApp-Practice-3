@@ -1,0 +1,50 @@
+@model ProductCatalogApp.Models.Sensor
+@using System.Globalization
+
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+<div class="mb-3">
+    <label asp-for="Name" class="form-label"></label>
+    <input asp-for="Name" class="form-control" />
+    <span asp-validation-for="Name" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="EquipmentId" class="form-label"></label>
+
+    <select asp-for="EquipmentId"
+            class="form-select"
+            asp-items="ViewBag.EquipmentId">
+        <option value="">-- Выберите оборудование --</option>
+    </select>
+
+    <span asp-validation-for="EquipmentId" class="text-danger"></span>
+</div>
+
+<div class="mb-3">
+    <label asp-for="Unit" class="form-label"></label>
+    <input asp-for="Unit" class="form-control" placeholder="например, °C" />
+    <span asp-validation-for="Unit" class="text-danger"></span>
+</div>
+
+<div class="row">
+    <div class="col-sm-6 mb-3">
+        <label asp-for="MinValue" class="form-label"></label>
+        <input asp-for="MinValue"
+               type="number"
+               step="any"
+               class="form-control"
+               value="@(Model?.MinValue.ToString(CultureInfo.InvariantCulture))" />
+        <span asp-validation-for="MinValue" class="text-danger"></span>
+    </div>
+
+    <div class="col-sm-6 mb-3">
+        <label asp-for="MaxValue" class="form-label"></label>
+        <input asp-for="MaxValue"
+               type="number"
+               step="any"
+               class="form-control"
+               value="@(Model?.MaxValue.ToString(CultureInfo.InvariantCulture))" />
+        <span asp-validation-for="MaxValue" class="text-danger"></span>
+    </div>
+</div>

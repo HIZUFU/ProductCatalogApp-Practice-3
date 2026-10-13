@@ -16,12 +16,15 @@ namespace ProductCatalogApp.Models
         [Display(Name = "Единица измерения")]
         public string Unit { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "Введите нижнюю границу нормы")]
         [Display(Name = "Нижняя граница нормы")]
         public double MinValue { get; set; }
 
+        [Required(ErrorMessage = "Введите верхнюю границу нормы")]
         [Display(Name = "Верхняя граница нормы")]
         public double MaxValue { get; set; }
 
+        [Required(ErrorMessage = "Выберите оборудование")]
         [Range(1, int.MaxValue, ErrorMessage = "Выберите оборудование")]
         [Display(Name = "Оборудование")]
         public int EquipmentId { get; set; }

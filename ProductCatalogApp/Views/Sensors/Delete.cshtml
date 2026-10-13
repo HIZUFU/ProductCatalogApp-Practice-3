@@ -1,0 +1,42 @@
+@model ProductCatalogApp.Models.Sensor
+
+@{
+    ViewData["Title"] = "Удаление датчика";
+
+    int readingsCount = (int)(ViewData["ReadingsCount"] ?? 0);
+}
+
+<h1>Удаление датчика</h1>
+
+<h3>Вы уверены, что хотите удалить этот датчик?</h3>
+
+@if (readingsCount > 0)
+{
+    <div class="alert alert-warning">
+        Вместе с датчиком будут удалены все его сохранённые показания
+        (@readingsCount шт.).
+    </div>
+}
+
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Название датчика</dt>
+    <dd class="col-sm-9">@Model.Name</dd>
+
+    <dt class="col-sm-3">Оборудование</dt>
+    <dd class="col-sm-9">@Model.Equipment?.Name</dd>
+
+    <dt class="col-sm-3">Производственная площадка</dt>
+    <dd class="col-sm-9">@(Model.Equipment?.ProductionSite?.Name ?? "Не указана")</dd>
+
+    <dt class="col-sm-3">Норма</dt>
+    <dd class="col-sm-9">@Model.MinValue – @Model.MaxValue @Model.Unit</dd>
+</dl>
+
+<form asp-action="Delete">
+    <input type="hidden" asp-for="Id" />
+
+    <button type="submit" class="btn btn-danger">Удалить</button>
+    <a asp-action="Index" class="btn btn-secondary">Назад к списку</a>
+</form>

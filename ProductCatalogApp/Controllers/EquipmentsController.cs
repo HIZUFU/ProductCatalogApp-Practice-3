@@ -16,7 +16,6 @@ public class EquipmentsController : Controller
     }
 
     // GET: Equipments
-    // Также выполняет фильтрацию оборудования по площадке.
     public async Task<IActionResult> Index(int? productionSiteId)
     {
         var equipmentQuery = _context.EquipmentItems
@@ -187,7 +186,6 @@ public class EquipmentsController : Controller
         return _context.EquipmentItems.Any(e => e.Id == id);
     }
 
-    // Создаёт выпадающий список производственных площадок.
     private async Task LoadProductionSitesAsync(int? selectedId = null)
     {
         var productionSites = await _context.ProductionSites
