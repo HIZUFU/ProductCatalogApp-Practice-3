@@ -20,3 +20,43 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.sensor-card {
+  border-width: 2px;
+}
+
+.sensor-value {
+  font-size: 1.75rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.sensor-card.sensor-updated {
+  animation: sensor-flash 0.8s ease-out;
+}
+
+@keyframes sensor-flash {
+  from {
+    box-shadow: 0 0 0 0.3rem rgba(13, 110, 253, 0.35);
+  }
+
+  to {
+    box-shadow: none;
+  }
+}
+
+.alarm-list {
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.monitoring-journal {
+  max-height: 32rem;
+  overflow-y: auto;
+}
+
+.monitoring-journal thead th {
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+}

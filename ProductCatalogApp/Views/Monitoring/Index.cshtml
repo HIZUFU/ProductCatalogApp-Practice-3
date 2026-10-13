@@ -1,0 +1,163 @@
+@{
+    ViewData["Title"] = "Мониторинг датчиков";
+
+    bool isAuthenticated = User.Identity?.IsAuthenticated == true;
+    bool isAdmin = User.IsInRole("Admin");
+}
+
+<div id="monitoring"
+     data-admin="@(isAdmin ? "true" : "false")">
+
+    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3">
+        <h1 class="h3 mb-0">Мониторинг датчиковой аппаратуры</h1>
+
+        <div class="d-flex flex-wrap align-items-center gap-2">
+            <span id="connection-status" class="badge bg-secondary">
+                Подключение…
+            </span>
+
+            <span id="simulation-status" class="badge bg-secondary">
+                Имитатор: —
+            </span>
+
+            @if (isAdmin)
+            {
+                <button id="simulation-toggle"
+                        type="button"
+                        class="btn btn-sm btn-outline-primary"
+                        disabled>
+                    Имитатор
+                </button>
+            }
+        </div>
+    </div>
+
+    <div id="monitoring-error"
+         class="alert alert-danger d-none"
+         role="alert"></div>
+
+    <div class="row g-3 mb-3">
+        <div class="col-md-6">
+            <label for="site-select" class="form-label">
+                Производственная площадка
+            </label>
+
+            <select id="site-select"
+                    class="form-select"
+                    asp-items="ViewBag.ProductionSiteId">
+                <option value="">Все площадки</option>
+            </select>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card h-100">
+                <div class="card-body py-2">
+                    <div class="fw-semibold">
+                        Пользователи онлайн:
+                        <span id="online-count">0</span>
+                    </div>
+
+                    <div id="online-details" class="small text-muted"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="h5">Текущие показания</h2>
+
+    <div id="sensor-cards"
+         class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 mb-4">
+        <div class="col text-muted">Загрузка…</div>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-5">
+            <h2 class="h5">
+                Активные тревоги
+                <span id="alarm-count" class="badge bg-danger">0</span>
+            </h2>
+
+            <ul id="alarm-list" class="list-group alarm-list mb-4"></ul>
+
+            @if (isAuthenticated)
+            {
+                <h2 class="h5">Контрольный замер</h2>
+
+                <form id="reading-form" class="card card-body" novalidate>
+                    <div class="mb-2">
+                        <label for="reading-sensor" class="form-label">
+                            Датчик
+                        </label>
+
+                        <select id="reading-sensor"
+                                class="form-select"
+                                required></select>
+                    </div>
+
+                    <div class="mb-2">
+                        <label for="reading-value" class="form-label">
+                            Значение
+                        </label>
+
+                        <div class="input-group">
+                            <input id="reading-value"
+                                   type="number"
+                                   step="any"
+                                   class="form-control"
+                                   required />
+
+                            <span id="reading-unit"
+                                  class="input-group-text"></span>
+                        </div>
+
+                        <div id="reading-range" class="form-text"></div>
+                    </div>
+
+                    <div>
+                        <button id="reading-submit"
+                                type="submit"
+                                class="btn btn-primary">
+                            Отправить показание
+                        </button>
+                    </div>
+
+                    <div id="reading-result" class="small mt-2"></div>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    Чтобы передавать показания контрольных замеров,
+                    <a asp-controller="Account" asp-action="Login">войдите</a>
+                    или
+                    <a asp-controller="Account" asp-action="Register">зарегистрируйтесь</a>.
+                </div>
+            }
+        </div>
+
+        <div class="col-lg-7">
+            <h2 class="h5">Журнал показаний</h2>
+
+            <div class="table-responsive monitoring-journal">
+                <table class="table table-sm table-hover align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th>Время</th>
+                            <th>Датчик</th>
+                            <th class="text-end">Значение</th>
+                            <th>Источник</th>
+                            <th>Состояние</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="journal-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/microsoft-signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/js/monitoring.js" asp-append-version="true"></script>
+}
