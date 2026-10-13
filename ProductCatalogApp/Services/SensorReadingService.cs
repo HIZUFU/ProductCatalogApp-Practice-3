@@ -64,6 +64,34 @@ namespace ProductCatalogApp.Services
             };
         }
 
+        public async Task<SensorReadingDto?> AcknowledgeAlarmAsync(
+            int readingId,
+            string userName)
+        {
+            var reading = await _context.SensorReadings
+                .Include(reading => reading.Sensor)
+                    .ThenInclude(sensor => sensor!.Equipment)
+                        .ThenInclude(equipment => equipment!.ProductionSite)
+                .FirstOrDefaultAsync(reading =>
+                    reading.Id == readingId && reading.IsAlarm);
+
+            if (reading == null)
+            {
+                return null;
+            }
+
+            if (!reading.IsAcknowledged)
+            {
+                reading.IsAcknowledged = true;
+                reading.AcknowledgedBy = userName;
+                reading.AcknowledgedAt = DateTime.UtcNow;
+
+                await _context.SaveChangesAsync();
+            }
+
+            return SensorReadingDto.FromEntity(reading);
+        }
+
         public async Task<MonitoringSnapshot> GetSnapshotAsync(
             int? productionSiteId)
         {
