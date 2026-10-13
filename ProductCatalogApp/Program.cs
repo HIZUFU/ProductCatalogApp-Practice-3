@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using ProductCatalogApp.Models;
 using Microsoft.AspNetCore.Authorization;
+using ProductCatalogApp.Hubs;
+using ProductCatalogApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +40,14 @@ builder.Services.AddScoped<
     IPasswordHasher<AppUser>,
     PasswordHasher<AppUser>>();
 
+builder.Services.AddSignalR(options =>
+{
+    options.EnableDetailedErrors = builder.Environment.IsDevelopment();
+    options.KeepAliveInterval = TimeSpan.FromSeconds(15);
+});
+
+builder.Services.AddSingleton<OnlineUserTracker>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -59,6 +69,9 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapHub<MonitoringHub>("/hubs/monitoring")
+    .AllowAnonymous();
 
 await DbInitializer.InitializeAsync(app.Services);
 app.Run();
