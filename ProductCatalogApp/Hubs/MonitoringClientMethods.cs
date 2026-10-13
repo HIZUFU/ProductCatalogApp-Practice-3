@@ -13,5 +13,7 @@ namespace ProductCatalogApp.Hubs
         public const string ReadingAccepted = "ReadingAccepted";
 
         public const string AlarmAcknowledged = "AlarmAcknowledged";
+
+        public const string SimulationStateChanged = "SimulationStateChanged";
     }
 }

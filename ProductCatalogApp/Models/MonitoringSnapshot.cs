@@ -4,6 +4,8 @@ namespace ProductCatalogApp.Models
     {
         public int? ProductionSiteId { get; set; }
 
+        public bool SimulationEnabled { get; set; }
+
         public List<SensorStateDto> Sensors { get; set; } = new();
 
         public List<SensorReadingDto> RecentReadings { get; set; } = new();

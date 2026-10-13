@@ -49,6 +49,11 @@ builder.Services.AddSignalR(options =>
 builder.Services.AddSingleton<OnlineUserTracker>();
 builder.Services.AddScoped<SensorReadingService>();
 
+builder.Services.Configure<MonitoringOptions>(
+    builder.Configuration.GetSection(MonitoringOptions.SectionName));
+builder.Services.AddSingleton<SimulationState>();
+builder.Services.AddHostedService<SensorSimulationService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
