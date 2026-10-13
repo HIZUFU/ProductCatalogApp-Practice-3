@@ -155,6 +155,7 @@
 
     connection.onclose(() => {
         setConnectionStatus("disconnected");
+        scheduleStart();
     });
 
     async function joinSite(siteId) {
@@ -601,6 +602,10 @@
     }
 
     async function start() {
+        if (connection.state !== signalR.HubConnectionState.Disconnected) {
+            return;
+        }
+
         setConnectionStatus("connecting");
 
         try {
@@ -609,8 +614,12 @@
             await joinSite(state.siteId);
         } catch (error) {
             setConnectionStatus("disconnected");
-            setTimeout(start, 5000);
+            scheduleStart();
         }
+    }
+
+    function scheduleStart() {
+        setTimeout(start, 5000);
     }
 
     state.siteId = parseSiteId(elements.siteSelect.value);
