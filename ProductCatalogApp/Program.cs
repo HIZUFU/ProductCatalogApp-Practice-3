@@ -5,12 +5,18 @@ using Microsoft.AspNetCore.Identity;
 using ProductCatalogApp.Models;
 using Microsoft.AspNetCore.Authorization;
 using ProductCatalogApp.Hubs;
+using ProductCatalogApp.Infrastructure;
 using ProductCatalogApp.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(options =>
+{
+    options.ModelBinderProviders.Insert(
+        0,
+        new FlexibleDoubleModelBinderProvider());
+});
 
 builder.Services
     .AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
